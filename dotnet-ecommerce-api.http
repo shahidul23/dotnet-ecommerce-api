@@ -10,3 +10,32 @@ GET {{dotnet_ecommerce_api_HostAddress}}/hello
 
 ### User Endpoint
 GET {{dotnet_ecommerce_api_HostAddress}}/users/4
+
+### User Create
+POST  {{dotnet_ecommerce_api_HostAddress}}/user/create
+
+### Category List
+GET {{dotnet_ecommerce_api_HostAddress}}/api/categories?searchValue=Electronics
+
+### Caregory Create
+POST {{dotnet_ecommerce_api_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+    "name" : "Electronics",
+    "description": "This is a new Elctronic device for everyone"
+}
+
+
+### Category delete
+DELETE {{dotnet_ecommerce_api_HostAddress}}/api/categories/c01314e6-03b0-45bd-81bf-73dc0cb6ee73
+
+
+### Category Update 
+PUT  {{dotnet_ecommerce_api_HostAddress}}/api/categories/f5b437f6-0290-4952-a5dd-830e1640a87d
+Content-Type: application/json
+
+{
+    "name" : "Buildings",
+    "description": "This is a new Biuldiong for everyone"
+}
