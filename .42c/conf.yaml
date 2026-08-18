@@ -1,0 +1,3 @@
+apis:
+  web-api.yml:
+    alias: api-title

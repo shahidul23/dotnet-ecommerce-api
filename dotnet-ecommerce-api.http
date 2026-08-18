@@ -1,0 +1,12 @@
+@dotnet_ecommerce_api_HostAddress = http://localhost:5008
+
+### Root Endpoint
+GET {{dotnet_ecommerce_api_HostAddress}}/
+
+###
+
+### Hello Endpoint
+GET {{dotnet_ecommerce_api_HostAddress}}/hello
+
+### User Endpoint
+GET {{dotnet_ecommerce_api_HostAddress}}/users/4
