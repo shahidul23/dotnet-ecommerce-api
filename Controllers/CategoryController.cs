@@ -1,4 +1,5 @@
 using System;
+using dotnet_ecommerce_api.DTOs;
 using dotnet_ecommerce_api.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,23 +14,26 @@ public class CategoryController:ControllerBase
     [HttpGet]
     public IActionResult GetCategories([FromQuery] string searchValue="")
     {
-        if (!string.IsNullOrEmpty(searchValue))
+        // if (!string.IsNullOrEmpty(searchValue))
+        // {
+        //     var searchCat = categories.Where(c =>!string.IsNullOrEmpty(c.Name) && c.Name.Contains(searchValue ,StringComparison.OrdinalIgnoreCase)).ToList();
+
+        //     return Ok(searchCat);
+
+        // }
+        var categotyList = categories.Select(c => new CategoryReadDto
         {
-            var searchCat = categories.Where(c =>!string.IsNullOrEmpty(c.Name) && c.Name.Contains(searchValue ,StringComparison.OrdinalIgnoreCase)).ToList();
-
-            return Ok(searchCat);
-
-        }
-        return Ok(categories);
+            CategortId = c.CategortId,
+            Name = c.Name,
+            Description = c.Description,
+            createdAt = c.createdAt
+        });
+        return Ok(categotyList);
     }   
     
     [HttpPost]
-    public IActionResult CreateCategory([FromBody] Category category)
+    public IActionResult CreateCategory([FromBody] CategoryCreateDto category)
     {
-        if (string.IsNullOrEmpty(category.Name))
-        {
-            return BadRequest("Category Name is Required and can not be empty");
-        }
         var newCategory =new Category
         {
             CategortId = Guid.NewGuid(),
@@ -38,12 +42,18 @@ public class CategoryController:ControllerBase
             createdAt = DateTime.UtcNow,
         };
         categories.Add(newCategory);
-
-        return Created($"/api/categories/{newCategory.CategortId}",newCategory);
+        var categoryRead = new CategoryReadDto
+        {
+            CategortId = newCategory.CategortId,
+            Name = newCategory.Name,
+            Description = newCategory.Description,
+            createdAt = newCategory.createdAt
+        };
+        return Created($"/api/categories/{categoryRead.CategortId}",categoryRead);
     }
     
     [HttpPut("{categoryId:guid}")]
-    public IActionResult UpdateCatagory(Guid categoryId, [FromBody] Category category)
+    public IActionResult UpdateCatagory(Guid categoryId, [FromBody] CategoryUpdateDto category)
     {
         var foundCategory = categories.FirstOrDefault(category => category.CategortId == categoryId);
         if (foundCategory==null)
