@@ -15,24 +15,27 @@ GET {{dotnet_ecommerce_api_HostAddress}}/users/4
 POST  {{dotnet_ecommerce_api_HostAddress}}/user/create
 
 ### Category List
-GET {{dotnet_ecommerce_api_HostAddress}}/api/categories
+GET {{dotnet_ecommerce_api_HostAddress}}/v1/api/categories
 
 ### Caregory Create
-POST {{dotnet_ecommerce_api_HostAddress}}/api/categories
+POST {{dotnet_ecommerce_api_HostAddress}}/v1/api/categories
 Content-Type: application/json
 
 {
-    "name" : "e",
+    "name" : "Clodth",
     "description": "This is a new Elctronic device for everyone"
 }
 
+### Found Single Category
+GET {{dotnet_ecommerce_api_HostAddress}}/v1/api/categories/8d36dba9-882c-4753-a28e-b259ff409ed
+
 
 ### Category delete
-DELETE {{dotnet_ecommerce_api_HostAddress}}/api/categories/29f2e3a3-7ed2-47c2-9ece-d0c798a9ac51
+DELETE {{dotnet_ecommerce_api_HostAddress}}/v1/api/categories/0e6bbc38-821a-412e-8c90-b0491cac9a6f
 
 
 ### Category Update 
-PUT  {{dotnet_ecommerce_api_HostAddress}}/api/categories/29f2e3a3-7ed2-47c2-9ece-d0c798a9ac51
+PUT  {{dotnet_ecommerce_api_HostAddress}}/v1/api/categories/bde7bf12-e5c5-4a2d-b086-fffa0d2d68b9
 Content-Type: application/json
 
 {

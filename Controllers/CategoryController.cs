@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace dotnet_ecommerce_api.Controllers;
 
 [ApiController]
-[Route("api/categories")]
+[Route("v1/api/categories")]
 public class CategoryController:ControllerBase
 {
     private static List<Category> categories = new List<Category> ();
@@ -27,9 +27,27 @@ public class CategoryController:ControllerBase
             Name = c.Name,
             Description = c.Description,
             createdAt = c.createdAt
-        });
-        return Ok(categotyList);
-    }   
+        }).ToList();
+        return Ok(ApiResponse<List<CategoryReadDto>>.SuccessResponse(categotyList, 200, "Category Return Successfully"));
+    }  
+    // Read a category Id 
+    [HttpGet("{categoryId:guid}")]
+    public IActionResult getCategoryById(Guid categoryId)
+    {
+        var foundCategory = categories.FirstOrDefault(c => c.CategortId == categoryId);
+        if (foundCategory == null)
+        {
+            return NotFound(ApiResponse<object>.ErrorResponse(new List<string>{"Category not found with this id"}, 404, "Validation Error"));
+        }
+        var categoryRead = new CategoryReadDto
+        {
+            CategortId = foundCategory.CategortId,
+            Name = foundCategory.Name,
+            Description = foundCategory.Description,
+            createdAt = foundCategory.createdAt
+        };
+        return Ok(ApiResponse<CategoryReadDto>.SuccessResponse(categoryRead, 200, "Category Return Successfully"));
+    }
     
     [HttpPost]
     public IActionResult CreateCategory([FromBody] CategoryCreateDto category)
@@ -49,7 +67,7 @@ public class CategoryController:ControllerBase
             Description = newCategory.Description,
             createdAt = newCategory.createdAt
         };
-        return Created($"/api/categories/{categoryRead.CategortId}",categoryRead);
+        return Created(nameof(getCategoryById),ApiResponse<CategoryReadDto>.SuccessResponse(categoryRead, 201, "Category Create Successfully"));
     }
     
     [HttpPut("{categoryId:guid}")]
@@ -58,19 +76,11 @@ public class CategoryController:ControllerBase
         var foundCategory = categories.FirstOrDefault(category => category.CategortId == categoryId);
         if (foundCategory==null)
         {
-            return NotFound("Category dose not exist");
-        }
-        if (string.IsNullOrEmpty(category.Name))
-        {
-            return BadRequest("Category Name is Required and can not be empty");
-        }
-        if(category == null)
-        {
-            return BadRequest("Category with this is dose not exists");
+            return NotFound(ApiResponse<object>.ErrorResponse(new List<string>{"Category not Found with this id"}, 400, "Validation failed"));
         }
         foundCategory.Name = category.Name ?? category.Name;
         foundCategory.Description = category.Description ?? category.Description;
-        return NoContent();
+        return Ok(ApiResponse<object>.SuccessResponse(null, 204, "Category Update Successfully"));
     }
     
     [HttpDelete("{categoryId:guid}")]
@@ -79,9 +89,9 @@ public class CategoryController:ControllerBase
         var foundCategory = categories.FirstOrDefault(category => category.CategortId == categoryId);
         if (foundCategory==null)
         {
-            return NotFound("Category dose not exist");
+            return NotFound(ApiResponse<object>.ErrorResponse(new List<string>{"Category not Found with this id"}, 400, "Validation failed"));
         }
         categories.Remove(foundCategory);
-        return NoContent();
+        return Ok(ApiResponse<object>.SuccessResponse(null, 204, "Category Deleted Successfully"));
     }
 }
