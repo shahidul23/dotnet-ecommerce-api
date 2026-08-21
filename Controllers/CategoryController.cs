@@ -1,5 +1,6 @@
 using System;
 using dotnet_ecommerce_api.DTOs;
+using dotnet_ecommerce_api.Helpers;
 using dotnet_ecommerce_api.Interfaces;
 using dotnet_ecommerce_api.Models;
 using dotnet_ecommerce_api.Services;
@@ -24,7 +25,7 @@ public class CategoryController:ControllerBase
     
     // Get Request /api/categories
     [HttpGet]
-    public async Task<IActionResult> GetCategories([FromQuery] string searchValue="")
+    public async Task<IActionResult> GetCategories([FromQuery] QueryParameters queryParameters)
     {
         // if (!string.IsNullOrEmpty(searchValue))
         // {
@@ -33,9 +34,11 @@ public class CategoryController:ControllerBase
         //     return Ok(searchCat);
 
         // }
-        var categotyList =await _categoryService.GetAllcategories();
+        // Console.WriteLine($" Page Nummber : {pageNumber} PageSize : {pageSize}");
+        queryParameters.Validate();
+        var categotyList =await _categoryService.GetAllcategories(queryParameters);
         
-        return Ok(ApiResponse<List<CategoryReadDto>>.SuccessResponse(categotyList, 200, "Category Return Successfully"));
+        return Ok(ApiResponse<PaginatedResult<CategoryReadDto>>.SuccessResponse(categotyList, 200, "Category Return Successfully"));
     }  
     // Read a category Id 
     [HttpGet("{categoryId:guid}")]

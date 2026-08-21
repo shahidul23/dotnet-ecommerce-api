@@ -5,8 +5,13 @@ namespace dotnet_ecommerce_api.Models;
 public class Category
 {
     public Guid CategortId{get;set;}
-    public string? Name{get;set;}
-    public string? Description{get; set;} = string.Empty;
+    public string Name{get;set;} = string.Empty;
+    public string Description{get; set;} = string.Empty;
     public DateTime createdAt{get;set;}
+    public Category()
+    {
+        CategortId = Guid.NewGuid();
+        createdAt = DateTime.UtcNow;
+    }
 }
 

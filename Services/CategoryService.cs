@@ -1,7 +1,10 @@
 using System;
 using AutoMapper;
+using dotnet_ecommerce_api.Controllers;
 using dotnet_ecommerce_api.data;
 using dotnet_ecommerce_api.DTOs;
+using dotnet_ecommerce_api.Enums;
+using dotnet_ecommerce_api.Helpers;
 using dotnet_ecommerce_api.Interfaces;
 using dotnet_ecommerce_api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +24,57 @@ public class CategoryService:ICategoryService
         _mapper = mapper;
     }
 
-    public async Task<List<CategoryReadDto>> GetAllcategories()
+    public async Task<PaginatedResult<CategoryReadDto>> GetAllcategories(QueryParameters queryParameters)
     {
-        var categories = await _appDbContext.Categories.ToListAsync();
-       return _mapper.Map<List<CategoryReadDto>>(categories);
+        var pageNumber = queryParameters.PageNumber;
+        var pageSize = queryParameters.PageSize;
+        var search = queryParameters.Search;
+        var sortOrder = queryParameters.SortOrder;
+
+
+
+        IQueryable<Category> query = _appDbContext.Categories;
+
+        // search by name and description
+        
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var formatValue = $"%{search.Trim()}%";
+            query = query.Where(c=> EF.Functions.ILike(c.Name ,formatValue) || EF.Functions.ILike(c.Description, formatValue));
+        }
+
+        if (string.IsNullOrWhiteSpace(sortOrder))
+        {
+            query = query.OrderBy(c=>c.Name);
+        }
+        else
+        {
+            var formatedOsrtOrder = sortOrder.Trim().ToLower();
+            if(Enum.TryParse<SortOrder>(formatedOsrtOrder, true, out var order))
+            {
+                query = order switch
+                {
+                    SortOrder.NameAsc => query.OrderBy(c=>c.Name),
+                    SortOrder.NameDesc  => query.OrderByDescending(c => c.Name),
+                    SortOrder.DescriptionAsc => query.OrderBy(c=>c.Description),
+                    SortOrder.DescriptionDesc => query.OrderByDescending(c => c.Description),
+                    SortOrder.CreatedAtAsc => query.OrderBy(c=>c.createdAt),
+                    SortOrder.CreatedAtDesc => query.OrderByDescending(c => c.createdAt)
+                };
+            }
+        }
+
+        var totalCount = await query.CountAsync();
+        // paginateion
+        var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        var result = _mapper.Map<List<CategoryReadDto>>(items);
+        return new PaginatedResult<CategoryReadDto>
+        {
+            Items = result,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize =pageSize
+        };
         // return _categories.Select(c => new CategoryReadDto
         // {
         //     CategortId = c.CategortId,
@@ -62,9 +112,6 @@ public class CategoryService:ICategoryService
         //     createdAt = DateTime.UtcNow,
         // };
         var newCategory = _mapper.Map<Category>(categoryCreateDto);
-        newCategory.CategortId = Guid.NewGuid();
-        newCategory.Name = categoryCreateDto.Name;
-        newCategory.Description = categoryCreateDto.Description;
         await _appDbContext.Categories.AddAsync(newCategory);
         await _appDbContext.SaveChangesAsync();
         // return new CategoryReadDto
