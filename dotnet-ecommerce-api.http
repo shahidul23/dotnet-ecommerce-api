@@ -22,7 +22,7 @@ POST {{dotnet_ecommerce_api_HostAddress}}/v1/api/categories
 Content-Type: application/json
 
 {
-    "name" : "Electric",
+    "name" : "Smart Phone",
     "description": "This is a new Elctronic device for everyone"
 }
 

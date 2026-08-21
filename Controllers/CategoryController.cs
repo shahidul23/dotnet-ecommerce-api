@@ -24,7 +24,7 @@ public class CategoryController:ControllerBase
     
     // Get Request /api/categories
     [HttpGet]
-    public IActionResult GetCategories([FromQuery] string searchValue="")
+    public async Task<IActionResult> GetCategories([FromQuery] string searchValue="")
     {
         // if (!string.IsNullOrEmpty(searchValue))
         // {
@@ -33,15 +33,15 @@ public class CategoryController:ControllerBase
         //     return Ok(searchCat);
 
         // }
-        var categotyList = _categoryService.GetAllcategories();
+        var categotyList =await _categoryService.GetAllcategories();
         
         return Ok(ApiResponse<List<CategoryReadDto>>.SuccessResponse(categotyList, 200, "Category Return Successfully"));
     }  
     // Read a category Id 
     [HttpGet("{categoryId:guid}")]
-    public IActionResult getCategoryById(Guid categoryId)
+    public async Task<IActionResult> getCategoryById(Guid categoryId)
     {
-       var category = _categoryService.GetCategoryById(categoryId);
+       var category = await _categoryService.GetCategoryById(categoryId);
        if (category == null)
         {
             return NotFound(ApiResponse<object>.ErrorResponse(new List<string> {"Category with this ID Dose not exist"}, 400, "Validation Failed"));
@@ -50,16 +50,16 @@ public class CategoryController:ControllerBase
     }
     
     [HttpPost]
-    public IActionResult CreateCategory([FromBody] CategoryCreateDto category)
+    public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDto category)
     {
-        var categoryRead = _categoryService.CreateCategory(category);
+        var categoryRead =await _categoryService.CreateCategory(category);
         return Created(nameof(getCategoryById),ApiResponse<CategoryReadDto>.SuccessResponse(categoryRead, 201, "Category Create Successfully"));
     }
     
     [HttpPut("{categoryId:guid}")]
-    public IActionResult UpdateCatagory(Guid categoryId, [FromBody] CategoryUpdateDto category)
+    public async Task<IActionResult> UpdateCatagory(Guid categoryId, [FromBody] CategoryUpdateDto category)
     {
-        var Category = _categoryService.UpdateCategoryById(categoryId, category);
+        var Category =await _categoryService.UpdateCategoryById(categoryId, category);
         if (Category==null)
         {
             return NotFound(ApiResponse<object>.ErrorResponse(new List<string>{"Category not Found with this id"}, 400, "Validation failed"));
@@ -69,9 +69,9 @@ public class CategoryController:ControllerBase
     }
     
     [HttpDelete("{categoryId:guid}")]
-    public IActionResult DeleteCategory(Guid categoryId)
+    public async Task<IActionResult> DeleteCategory(Guid categoryId)
     {
-        var category = _categoryService.DeleteCategoryById(categoryId);
+        var category = await _categoryService.DeleteCategoryById(categoryId);
         if (!category)
         {
             return NotFound(ApiResponse<object>.ErrorResponse(new List<string>{"Category not Found with this id"}, 400, "Validation failed"));

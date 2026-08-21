@@ -5,9 +5,9 @@ namespace dotnet_ecommerce_api.Interfaces;
 
 public interface ICategoryService
 {
-    List<CategoryReadDto> GetAllcategories();
-    CategoryReadDto? GetCategoryById(Guid categoryId);
-    CategoryReadDto CreateCategory(CategoryCreateDto categoryCreateDto);
-    CategoryReadDto? UpdateCategoryById(Guid categoryId, CategoryUpdateDto category);
-    bool DeleteCategoryById(Guid categoryId);
+    Task<List<CategoryReadDto>> GetAllcategories();
+    Task<CategoryReadDto?> GetCategoryById(Guid categoryId);
+    Task<CategoryReadDto> CreateCategory(CategoryCreateDto categoryCreateDto);
+    Task<CategoryReadDto?> UpdateCategoryById(Guid categoryId, CategoryUpdateDto category);
+    Task<bool> DeleteCategoryById(Guid categoryId);
 }
