@@ -12,7 +12,7 @@ using dotnet_ecommerce_api.data;
 namespace dotnet_ecommerce_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260821060138_InitialCreate")]
+    [Migration("20260901084017_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,9 +32,11 @@ namespace dotnet_ecommerce_api.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("createdAt")

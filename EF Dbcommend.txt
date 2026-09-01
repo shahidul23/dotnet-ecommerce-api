@@ -1,0 +1,25 @@
+EF Commend
+1. Install dotnet-ef : dotnet tool install --global dotnet-ef / dotnet tool update --global dotnet-ef
+2. Make sure EF Core packages are installed 
+   !.   Inside your project folder, run : dotnet add package Microsoft.EntityFrameworkCore
+   !!.  For PostgreSQL: dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+   !!!. And usually: dotnet add package Microsoft.EntityFrameworkCore.Design
+   ***  You can check: dotnet list package
+3. Create a migration
+    !.  If you haven't created one yet: dotnet ef migrations add InitialCreate
+4. Update the database 
+    !.  run : dotnet ef database update
+
+Recommended sequence :
+dotnet tool install --global dotnet-ef
+
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+
+dotnet ef --version
+
+dotnet ef migrations add InitialCreate
+
+dotnet ef database update
+
