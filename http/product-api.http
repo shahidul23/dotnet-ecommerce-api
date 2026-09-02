@@ -1,0 +1,34 @@
+@dotnet_ecommerce_api_HostAddress = http://localhost:5008
+
+###
+GET {{dotnet_ecommerce_api_HostAddress}}/v1/api/products
+
+### product get by id
+GET {{dotnet_ecommerce_api_HostAddress}}/v1/api/products/3e08c5dc-654f-485b-83b9-82734d2f28c5
+
+### Product Cateate
+POST {{dotnet_ecommerce_api_HostAddress}}/v1/api/products
+Content-Type: application/json
+
+{
+    "name" : "Samsung",
+    "description" : "Samsung 26 Pro latest Phone",
+    "price" : 170000,
+    "stockquantity": 250,
+    "CategoryId" : "465de0d1-2598-4658-8346-7b0feae817fa"
+}
+
+### Product update by Id
+PUT {{dotnet_ecommerce_api_HostAddress}}/v1/api/products/a671f655-82fc-4f1f-915e-33446d45bfcc
+Content-Type: application/json
+
+{
+    "name" : "I phone 16 Pro",
+    "description" : "IPhone 17 Pro latest Phone",
+    "price" : 120000,
+    "stockquantity": 250,
+    "CategoryId" : "465de0d1-2598-4658-8346-7b0feae817fa"
+}
+
+### product delete by id
+DELETE {{dotnet_ecommerce_api_HostAddress}}/v1/api/products/a671f655-82fc-4f1f-915e-33446d45bfcc

@@ -34,6 +34,7 @@ public static class ServiceExtensions
         // Application service
 
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IProductService, ProductService>();
 
         // Swagger
 

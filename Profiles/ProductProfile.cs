@@ -10,7 +10,17 @@ public class ProductProfile:Profile
     public ProductProfile()
     {
         CreateMap<Product, ProductReadDto>();
-        CreateMap<ProductCreateDto, Product>();
-        CreateMap<ProductUpdateDto, Product>();
+        CreateMap<Product, ProductWithCategoryReadDto>();
+        CreateMap<ProductCreateDto, Product>()
+            .ForMember(
+                dest => dest.CategortId,
+                opt => opt.MapFrom(src => src.CategoryId)
+            );
+        CreateMap<ProductUpdateDto, Product>()
+        .ForMember(
+            dest => dest.CategortId,
+            opt => opt.MapFrom(src => src.CategoryId)
+        );
+
     }
 }
