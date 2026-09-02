@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 
-namespace dotnet_ecommerce_api.Controllers;
+namespace dotnet_ecommerce_api.Common;
 
 public class PaginatedResult<T>
 {

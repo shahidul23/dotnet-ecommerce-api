@@ -1,6 +1,6 @@
 using System;
 
-namespace dotnet_ecommerce_api.Controllers;
+namespace dotnet_ecommerce_api.Common;
 
 public class ApiResponse<T>
 {

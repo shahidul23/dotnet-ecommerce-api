@@ -12,8 +12,8 @@ using dotnet_ecommerce_api.data;
 namespace dotnet_ecommerce_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260901100305_PriductsAndCategoryCreate")]
-    partial class PriductsAndCategoryCreate
+    [Migration("20260902021444_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,9 @@ namespace dotnet_ecommerce_api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -38,9 +41,6 @@ namespace dotnet_ecommerce_api.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("CategortId");
 
@@ -55,9 +55,6 @@ namespace dotnet_ecommerce_api.Migrations
 
                     b.Property<Guid>("CategortId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("CategoryName")
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("timestamp with time zone");

@@ -1,5 +1,6 @@
 using System;
 using AutoMapper;
+using dotnet_ecommerce_api.Common;
 using dotnet_ecommerce_api.Controllers;
 using dotnet_ecommerce_api.data;
 using dotnet_ecommerce_api.DTOs;
@@ -58,8 +59,8 @@ public class CategoryService:ICategoryService
                     SortOrder.NameDesc  => query.OrderByDescending(c => c.Name),
                     SortOrder.DescriptionAsc => query.OrderBy(c=>c.Description),
                     SortOrder.DescriptionDesc => query.OrderByDescending(c => c.Description),
-                    SortOrder.CreatedAtAsc => query.OrderBy(c=>c.createdAt),
-                    SortOrder.CreatedAtDesc => query.OrderByDescending(c => c.createdAt)
+                    SortOrder.CreatedAtAsc => query.OrderBy(c=>c.CreatedAt),
+                    SortOrder.CreatedAtDesc => query.OrderByDescending(c => c.CreatedAt)
                 };
             }
         }
