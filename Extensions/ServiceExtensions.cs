@@ -1,9 +1,14 @@
 using System;
+using System.Text;
 using AutoMapper;
 using dotnet_ecommerce_api.data;
 using dotnet_ecommerce_api.Interfaces;
+using dotnet_ecommerce_api.Models;
 using dotnet_ecommerce_api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace dotnet_ecommerce_api.Extensions;
 
@@ -35,10 +40,47 @@ public static class ServiceExtensions
 
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         // Swagger
 
         services.AddEndpointsApiExplorer();
+
+        // Add Identity
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+        // Add Authentication 
+        var jwtKey = configuration["Jwt:Key"]
+            ?? throw new InvalidOperationException("JWT Key is missing from configuration.");
+
+        var jwtIssuer = configuration["Jwt:Issuer"]
+            ?? throw new InvalidOperationException("JWT Issuer is missing from configuration.");
+
+        var jwtAudience = configuration["Jwt:Audience"]
+            ?? throw new InvalidOperationException("JWT Audience is missing from configuration.");
+        services.AddAuthentication(option =>
+        {
+            option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        
+        //Add JWT Bearer
+        .AddJwtBearer(option =>
+        {
+            option.SaveToken = true;
+            option.RequireHttpsMetadata = false;
+            option.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                ValidateIssuer = true,
+                ValidIssuer = jwtIssuer,
+                ValidateAudience = true,
+                ValidAudience = jwtAudience,
+            };
+        });
         services.AddSwaggerGen();
 
         //Open Api

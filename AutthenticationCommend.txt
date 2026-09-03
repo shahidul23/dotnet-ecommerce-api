@@ -1,0 +1,8 @@
+1. Identity Packet : Microsoft.AspNetCore.Identity.EntityFrameworkCore 
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
+
+2. Create migration : dotnet ef migrations add IdentityAdded
+3. Update Database : dotnet ef database update
+
+4.  Microsoft.AspNetCore.Authentication.JwtBearer
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
