@@ -21,7 +21,7 @@ public class RefreshTokenService : IRefreshTokenService
     }
     public async Task<RefreshToken> CreateAsync(ApplicationUser user, string jwtId)
     {
-        var expirationDays = _configuration.GetValue<int?>("Jwt:RefreshTokenExpirationDays") ?? 7;
+        var expirationDays = _configuration.GetValue<int?>("Jwt:RefreshTokenExpirationDays") ?? 1;
         var refreshToken = new RefreshToken
         {
             UserId = user.Id,
@@ -29,7 +29,7 @@ public class RefreshTokenService : IRefreshTokenService
             JwtId = jwtId,
             IsRevoked = false,
             DateAdded = DateTime.UtcNow,
-            DateExpire = DateTime.UtcNow.AddDays(expirationDays),
+            DateExpire = DateTime.UtcNow.AddMinutes(expirationDays),
         };
         
         await _appDbContext.AddAsync(refreshToken);

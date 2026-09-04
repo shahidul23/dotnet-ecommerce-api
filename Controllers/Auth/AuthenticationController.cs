@@ -74,5 +74,36 @@ namespace dotnet_ecommerce_api.Controllers.Auth
                 )
             );
         }
+
+        // Refresh tokan
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(
+            [FromBody] TokenRequestDto dto
+        )
+        {
+            var response = await _authService.RefreshTokenAsync(
+                dto
+            );
+            if (response == null)
+            {
+                return Unauthorized(
+                    ApiResponse<object>.ErrorResponse(
+                        new List<string>
+                        {
+                            "Invalid access token or refresh token."
+                        },
+                        401,
+                        "Token refresh failed."
+                    )
+                );
+            }
+            return Ok(
+                ApiResponse<AuthResponseDto>.SuccessResponse(
+                    response,
+                    200,
+                    "Token refreshed successfully."
+                )
+            );
+        }
     }
 }

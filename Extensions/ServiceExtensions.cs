@@ -47,12 +47,6 @@ public static class ServiceExtensions
         // Swagger
 
         services.AddEndpointsApiExplorer();
-
-        // Add Identity
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
-        // Add Authentication 
         var jwtKey = configuration["Jwt:Key"]
             ?? throw new InvalidOperationException("JWT Key is missing from configuration.");
 
@@ -61,6 +55,23 @@ public static class ServiceExtensions
 
         var jwtAudience = configuration["Jwt:Audience"]
             ?? throw new InvalidOperationException("JWT Audience is missing from configuration.");
+        // token validation paramiter
+        var tokenValidationParameter = new TokenValidationParameters()
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                ValidateIssuer = true,
+                ValidIssuer = jwtIssuer,
+                ValidateAudience = true,
+                ValidAudience = jwtAudience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+        // Add Identity
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
+        // Add Authentication 
         services.AddAuthentication(option =>
         {
             option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -73,16 +84,9 @@ public static class ServiceExtensions
         {
             option.SaveToken = true;
             option.RequireHttpsMetadata = false;
-            option.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
-                ValidateIssuer = true,
-                ValidIssuer = jwtIssuer,
-                ValidateAudience = true,
-                ValidAudience = jwtAudience,
-            };
+            option.TokenValidationParameters = tokenValidationParameter;
         });
+        services.AddSingleton(tokenValidationParameter);
         services.AddSwaggerGen();
 
         //Open Api

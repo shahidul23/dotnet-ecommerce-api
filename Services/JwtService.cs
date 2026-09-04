@@ -18,7 +18,7 @@ public class JwtService : IJwtService
         _configuration = configuration;
     }
 
-    public JwtTokenResult GenerateJwtToken(ApplicationUser user)
+    public JwtTokenResult GenerateJwtToken(ApplicationUser? user)
     {
         var jwtKey = _configuration["Jwt:Key"]
             ?? throw new InvalidOperationException(

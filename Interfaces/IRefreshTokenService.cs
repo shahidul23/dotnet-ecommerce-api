@@ -6,7 +6,7 @@ namespace dotnet_ecommerce_api.Interfaces;
 public interface IRefreshTokenService
 {
     Task<RefreshToken> CreateAsync(
-        ApplicationUser user,
+        ApplicationUser? user,
         string jwtId
     );
     Task<RefreshToken?> GetByTokenAsync(

@@ -6,6 +6,6 @@ namespace dotnet_ecommerce_api.Interfaces;
 
 public interface IJwtService
 {
-    JwtTokenResult GenerateJwtToken(ApplicationUser user);
+    JwtTokenResult GenerateJwtToken(ApplicationUser? user);
 
 }
