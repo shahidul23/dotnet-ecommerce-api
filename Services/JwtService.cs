@@ -71,11 +71,11 @@ public class JwtService : IJwtService
                 user.Email ?? string.Empty
             )
         };
-        var AuthSigninKey = new SymmetricSecurityKey(
+        var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(jwtKey)
         );
         var credentials = new SigningCredentials(
-            AuthSigninKey,
+            key,
             SecurityAlgorithms.HmacSha256
         );
         var tokenDescriptor = new SecurityTokenDescriptor

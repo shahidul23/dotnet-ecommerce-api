@@ -5,8 +5,16 @@ POST {{base_url}}/api/register
 Content-Type: application/json
 
 {
-    "username": "Shahidul21",
-    "email": "shahidul1@gmail.com",
+    "username": "Shahidul223",
+    "email": "shahidul2@gmail.com",
     "password": "Password@123",
     "confirmPassword": "Password@123"
+}
+### Login user
+POST {{base_url}}/api/login
+Content-Type: application/json
+
+{
+    "userNameOrEmail": "Shahidul223",
+    "password": "Password@123"
 }

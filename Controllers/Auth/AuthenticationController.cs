@@ -9,19 +9,21 @@ namespace dotnet_ecommerce_api.Controllers.Auth
     [Route("api")]
     public class AuthenticationController : ControllerBase
     {
+        
         private IAuthService _authService;
-        public AuthenticationController(IAuthService authService)
+        public AuthenticationController(
+            IAuthService authService
+        )
         {
             _authService = authService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(
-            [FromBody] RegisterDto payload
+            [FromBody] RegisterDto dto
         )
         {
-            Console.WriteLine("Start Register");
-            var user = await _authService.RegisterAsync(payload);
+            var user = await _authService.RegisterAsync(dto);
             if (user == null)
             {
                 return BadRequest(
@@ -45,6 +47,32 @@ namespace dotnet_ecommerce_api.Controllers.Auth
             );
         }
 
-
+        [HttpPost("login")]
+        public async Task<IActionResult> UserLogin(
+            [FromBody] LoginDto dto
+        )
+        {
+            var user = await _authService.LoginAsync(dto);
+            if (user == null)
+            {
+                return Unauthorized(
+                    ApiResponse<object>.ErrorResponse(
+                        new List<string>
+                        {
+                            "Invalid username/email or password."
+                        },
+                        401,
+                        "Login failed."
+                    )
+                );
+            }
+            return Ok(
+                ApiResponse<AuthResponseDto>.SuccessResponse(
+                    user,
+                    200,
+                    "Login successful."
+                )
+            );
+        }
     }
 }

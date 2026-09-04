@@ -6,5 +6,5 @@ namespace dotnet_ecommerce_api.Interfaces;
 public interface IAuthService
 {
     Task<AuthResponseDto?> RegisterAsync(RegisterDto register);
-    // Task<AuthResponseDto?> LoginAsync(LoginDto login);
+    Task<AuthResponseDto?> LoginAsync(LoginDto login);
 }

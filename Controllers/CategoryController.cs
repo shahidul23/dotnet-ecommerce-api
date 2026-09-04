@@ -3,14 +3,14 @@ using dotnet_ecommerce_api.Common;
 using dotnet_ecommerce_api.DTOs;
 using dotnet_ecommerce_api.Helpers;
 using dotnet_ecommerce_api.Interfaces;
-using dotnet_ecommerce_api.Models;
-using dotnet_ecommerce_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_ecommerce_api.Controllers;
 
 [ApiController]
 [Route("v1/api/categories")]
+[Authorize]
 public class CategoryController:ControllerBase
 {
     // private CategoryService _categoryService;
