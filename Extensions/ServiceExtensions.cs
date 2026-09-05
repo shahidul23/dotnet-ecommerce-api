@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using AutoMapper;
 using dotnet_ecommerce_api.data;
+using dotnet_ecommerce_api.Exceptions;
 using dotnet_ecommerce_api.Interfaces;
 using dotnet_ecommerce_api.Models;
 using dotnet_ecommerce_api.Services;
@@ -67,6 +68,7 @@ public static class ServiceExtensions
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
+        services.AddSingleton(tokenValidationParameter);    
         // Add Identity
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>()
@@ -86,7 +88,9 @@ public static class ServiceExtensions
             option.RequireHttpsMetadata = false;
             option.TokenValidationParameters = tokenValidationParameter;
         });
-        services.AddSingleton(tokenValidationParameter);
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
+        
         services.AddSwaggerGen();
 
         //Open Api

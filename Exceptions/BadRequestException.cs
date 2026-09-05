@@ -1,0 +1,12 @@
+using System;
+
+namespace dotnet_ecommerce_api.Exceptions;
+
+public class BadRequestException : AppException
+{
+    public BadRequestException(string message) : base(message, StatusCodes.Status400BadRequest)
+    {
+        
+    }
+
+}
