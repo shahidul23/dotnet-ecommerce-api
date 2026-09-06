@@ -184,9 +184,15 @@ public class RefreshTokenService : IRefreshTokenService
             {
                 throw new UnauthorizedException("User associated with token was not found");
             }
+            var roles = await _userManager.GetRolesAsync(
+                dbUserData
+            );
 
             // 10. Generate new JWT
-            var jwtResult = _jwtService.GenerateJwtToken(dbUserData);
+            var jwtResult = _jwtService.GenerateJwtToken(
+                dbUserData,
+                roles
+            );
 
             // 11. Rotate refresh token
             var newRefreshToken = await CreateAsync(
@@ -221,7 +227,10 @@ public class RefreshTokenService : IRefreshTokenService
              var dbUserData = await _userManager.FindByIdAsync(
                 dbRefreshToken.UserId
             );
-            var jwtResult = _jwtService.GenerateJwtToken(dbUserData);
+            var roles = await _userManager.GetRolesAsync(
+                dbUserData
+            );
+            var jwtResult = _jwtService.GenerateJwtToken(dbUserData, roles);
 
             // 11. Rotate refresh token
             var newRefreshToken = await CreateAsync(

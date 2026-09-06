@@ -21,4 +21,7 @@ public class RegisterDto
     [Required]
     [Compare("Password")]
     public string ConfirmPassword {get; set;} = string.Empty;
+
+    [Required(ErrorMessage = "Role is Required")]
+    public string Role {get; set;} = string.Empty;
 }

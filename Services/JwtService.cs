@@ -1,8 +1,10 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using dotnet_ecommerce_api.DTOs.Auth;
+using dotnet_ecommerce_api.Exceptions;
 using dotnet_ecommerce_api.Interfaces;
 using dotnet_ecommerce_api.Models;
 using Microsoft.IdentityModel.Tokens;
@@ -18,29 +20,37 @@ public class JwtService : IJwtService
         _configuration = configuration;
     }
 
-    public JwtTokenResult GenerateJwtToken(ApplicationUser? user)
+    public JwtTokenResult GenerateJwtToken(
+        ApplicationUser? user,
+        IList<string> roles
+        )
     {
         var jwtKey = _configuration["Jwt:Key"]
-            ?? throw new InvalidOperationException(
+            ?? throw new UnauthorizedException(
                 "JWT Key is not configured."
             );
 
 
         var jwtIssuer = _configuration["Jwt:Issuer"]
-            ?? throw new InvalidOperationException(
+            ?? throw new UnauthorizedException(
                 "JWT Issuer is not configured."
             );
 
 
         var jwtAudience = _configuration["Jwt:Audience"]
-            ?? throw new InvalidOperationException(
+            ?? throw new UnauthorizedException(
                 "JWT Audience is not configured."
             );
 
 
-        var expirationMinutes = _configuration
-            .GetValue<int?>("Jwt:ExpirationMinutes")
-            ?? 60;
+        var expirationMinutes = int.TryParse(
+            _configuration["Jwt:ExpirationMinutes"],
+            out var minutes
+        )
+            ? minutes
+            : throw new BadRequestException(
+                "JWT expiration minutes is not configured or invalid."
+            );
 
 
         var jwtId = Guid.NewGuid().ToString();
@@ -70,6 +80,15 @@ public class JwtService : IJwtService
                 ClaimTypes.Email,
                 user.Email ?? string.Empty
             )
+        };
+        foreach (var role in roles)
+        {
+            AuthClaims.Add(
+                new Claim(
+                    ClaimTypes.Role,
+                    role
+                )
+            );
         };
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(jwtKey)
@@ -103,5 +122,15 @@ public class JwtService : IJwtService
             ExpiresAt = expiresAt,
             JwtId = jwtId
         };
+    }
+
+    public DateTime GetExpiration()
+    {
+        var expirationMinutes = _configuration
+            .GetValue<int?>("Jwt:ExpirationMinutes")
+            ?? 60;
+        return DateTime.UtcNow.AddMinutes(
+            expirationMinutes
+        );
     }
 }

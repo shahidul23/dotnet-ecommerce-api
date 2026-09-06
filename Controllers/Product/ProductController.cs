@@ -1,11 +1,14 @@
 using dotnet_ecommerce_api.Common;
+using dotnet_ecommerce_api.DTOs.Auth;
 using dotnet_ecommerce_api.DTOs.ProductsDtos;
 using dotnet_ecommerce_api.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_ecommerce_api.Controllers.Product
 {
+    [Authorize(Roles = UserRoles.User)]
     [Route("v1/api/products")]
     [ApiController]
     public class ProductController : ControllerBase

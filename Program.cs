@@ -1,3 +1,4 @@
+using dotnet_ecommerce_api.data;
 using dotnet_ecommerce_api.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,8 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddApiValidation();
 
 var app = builder.Build();
+// App Db initilizer
+AppDbInitializer.SeedRole(app).Wait();
 
 if (app.Environment.IsDevelopment())
 {

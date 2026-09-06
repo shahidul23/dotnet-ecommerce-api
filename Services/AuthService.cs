@@ -1,16 +1,9 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using dotnet_ecommerce_api.Common;
 using dotnet_ecommerce_api.data;
 using dotnet_ecommerce_api.DTOs.Auth;
-using dotnet_ecommerce_api.Exceptions;
 using dotnet_ecommerce_api.Interfaces;
 using dotnet_ecommerce_api.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace dotnet_ecommerce_api.Services;
 
@@ -22,7 +15,6 @@ public class AuthService : IAuthService
     private readonly IConfiguration _configuration;
     private readonly IJwtService _jwtService;
     private readonly IRefreshTokenService _refreshTokenService;
-    private readonly TokenValidationParameters _tokenValidationParameters;
 
     public AuthService(
         UserManager<ApplicationUser> userManager,
@@ -30,8 +22,7 @@ public class AuthService : IAuthService
         AppDbContext appDbContext,
         IConfiguration configuration,
         IJwtService jwtService,
-        IRefreshTokenService refreshTokenService,
-        TokenValidationParameters tokenValidationParameters
+        IRefreshTokenService refreshTokenService
     )
     {
         _userManager = userManager;
@@ -40,7 +31,6 @@ public class AuthService : IAuthService
         _configuration = configuration;
         _jwtService = jwtService;
         _refreshTokenService = refreshTokenService;
-        _tokenValidationParameters = tokenValidationParameters;
     }
 
     public async Task<AuthResponseDto?> RegisterAsync(RegisterDto dto)
@@ -67,6 +57,18 @@ public class AuthService : IAuthService
         if (!result.Succeeded)
         {
             return null;
+        }
+        switch (dto.Role)
+        {
+            case "SuperAdmin":
+                await _userManager.AddToRoleAsync(newUser, UserRoles.SuperAdmin);
+                break;
+            case "Admin":
+                await _userManager.AddToRoleAsync(newUser, UserRoles.Admin);
+                break;
+            default:
+                await _userManager.AddToRoleAsync(newUser, UserRoles.User);
+                break;
         }
 
         return new AuthResponseDto
@@ -106,7 +108,10 @@ public class AuthService : IAuthService
         {
             return null;
         }
-        var jwtResult = _jwtService.GenerateJwtToken(existingUser);
+        var roles = await _userManager.GetRolesAsync(
+            existingUser
+        );
+        var jwtResult = _jwtService.GenerateJwtToken(existingUser, roles);
         var refreshToken = await _refreshTokenService.CreateAsync(
             existingUser,
             jwtResult.JwtId,
